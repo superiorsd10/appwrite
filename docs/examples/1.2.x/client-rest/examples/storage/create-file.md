@@ -1,0 +1,25 @@
+POST /v1/storage/buckets/{bucketId}/files HTTP/1.1
+Host: HOSTNAME
+Content-Type: multipart/form-data; boundary="1735752932"
+X-Appwrite-Response-Format: 1.0.0
+X-Appwrite-Project: 5df5acd0d48c2
+X-Appwrite-JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ...
+Content-Length: *Length of your entity body in bytes*
+
+--1735752932
+Content-Disposition: form-data; name="fileId"
+
+"[FILE_ID]"
+
+--1735752932
+Content-Disposition: form-data; name="file"
+
+cf 94 84 24 8d c4 91 10 0f dc 54 26 6c 8e 4b bc 
+e8 ee 55 94 29 e7 94 89 19 26 28 01 26 29 3f 16...
+
+--1735752932
+Content-Disposition: form-data; name="permissions[]"
+
+["read(\"any\")"]
+
+--1735752932--
