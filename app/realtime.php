@@ -127,7 +127,9 @@ function getDatabase(Registry &$register, string $namespace)
 
     return [
         $database,
-        function () use ($register, $redis) {
+        function () use ($register, &$db, &$database, $redis) {
+            $db = null;
+            $database = null;
             $register->get('redisPool')->put($redis);
         }
     ];
@@ -469,6 +471,11 @@ $server->onOpen(function (int $connection, SwooleRequest $request) use ($server,
             Console::error('[Error] Message: ' . $response['data']['message']);
         }
     } finally {
+        // Clear all references to PDO object
+        $db = null;
+        $database = null;
+        App::setResource('db', fn() => null);
+
         $register->get('redisPool')->put($redis);
     }
 });
@@ -571,6 +578,8 @@ $server->onMessage(function (int $connection, string $message) use ($server, $re
             $server->close($connection, $th->getCode());
         }
     } finally {
+        $db = null;
+        $database = null;
         $register->get('redisPool')->put($redis);
     }
 });
