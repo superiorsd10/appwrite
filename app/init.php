@@ -601,7 +601,7 @@ $register->set('smtp', function () {
 $register->set('geodb', function () {
     return new Reader(__DIR__ . '/db/DBIP/dbip-country-lite-2022-06.mmdb');
 });
-$register->set('db', function () {
+$register->set('db', function (bool $persistent = true) {
  // This is usually for our workers or CLI commands scope
     $dbHost = App::getEnv('_APP_DB_HOST', '');
     $dbPort = App::getEnv('_APP_DB_PORT', '');
@@ -611,7 +611,7 @@ $register->set('db', function () {
 
     $pdo = new PDO("mysql:host={$dbHost};port={$dbPort};dbname={$dbScheme};charset=utf8mb4", $dbUser, $dbPass, array(
         PDO::ATTR_TIMEOUT => 3, // Seconds
-        PDO::ATTR_PERSISTENT => true,
+        PDO::ATTR_PERSISTENT => $persistent,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_EMULATE_PREPARES => true,

@@ -103,7 +103,7 @@ function getDatabase(Registry &$register, string $namespace)
         try {
             $attempts++;
 
-            $db = $register->get('db');
+            $db = $register->get('db', true, [false]);
             $redis = $register->get('redisPool')->get();
 
             $cache = new Cache(new RedisCache($redis));
@@ -359,7 +359,7 @@ $server->onOpen(function (int $connection, SwooleRequest $request) use ($server,
     $response = new Response(new SwooleResponse());
 
     /** @var PDO $db */
-    $db = $register->get('db');
+    $db = $register->get('db', true, [false]);
     /** @var Redis $redis */
     $redis = $register->get('redisPool')->get();
 
