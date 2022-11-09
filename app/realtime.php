@@ -103,7 +103,7 @@ function getDatabase(Registry &$register, string $namespace)
         try {
             $attempts++;
 
-            $db = $register->get('dbPool')->get();
+            $db = $register->get('db');
             $redis = $register->get('redisPool')->get();
 
             $cache = new Cache(new RedisCache($redis));
@@ -127,8 +127,7 @@ function getDatabase(Registry &$register, string $namespace)
 
     return [
         $database,
-        function () use ($register, $db, $redis) {
-            $register->get('dbPool')->put($db);
+        function () use ($register, $redis) {
             $register->get('redisPool')->put($redis);
         }
     ];
@@ -360,7 +359,7 @@ $server->onOpen(function (int $connection, SwooleRequest $request) use ($server,
     $response = new Response(new SwooleResponse());
 
     /** @var PDO $db */
-    $db = $register->get('dbPool')->get();
+    $db = $register->get('db');
     /** @var Redis $redis */
     $redis = $register->get('redisPool')->get();
 
@@ -469,15 +468,7 @@ $server->onOpen(function (int $connection, SwooleRequest $request) use ($server,
             Console::error('[Error] Code: ' . $response['data']['code']);
             Console::error('[Error] Message: ' . $response['data']['message']);
         }
-
-        if ($th instanceof PDOException) {
-            $db = null;
-        }
     } finally {
-        /**
-         * Put used PDO and Redis Connections back into their pools.
-         */
-        $register->get('dbPool')->put($db);
         $register->get('redisPool')->put($redis);
     }
 });
@@ -485,7 +476,7 @@ $server->onOpen(function (int $connection, SwooleRequest $request) use ($server,
 $server->onMessage(function (int $connection, string $message) use ($server, $register, $realtime, $containerId) {
     try {
         $response = new Response(new SwooleResponse());
-        $db = $register->get('dbPool')->get();
+        $db = $register->get('db', true, [false]);
         $redis = $register->get('redisPool')->get();
 
         $cache = new Cache(new RedisCache($redis));
@@ -580,7 +571,6 @@ $server->onMessage(function (int $connection, string $message) use ($server, $re
             $server->close($connection, $th->getCode());
         }
     } finally {
-        $register->get('dbPool')->put($db);
         $register->get('redisPool')->put($redis);
     }
 });
