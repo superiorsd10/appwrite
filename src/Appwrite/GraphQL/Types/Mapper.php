@@ -149,7 +149,15 @@ class Mapper
             $fields['data'] = [
                 'type' => Type::string(),
                 'description' => 'Additional data',
-                'resolve' => static fn($object, $args, $context, $info) => \json_encode($object, JSON_FORCE_OBJECT),
+                'resolve' => static function ($object, $args, $context, $info) {
+                    $data = \array_filter(
+                        (array)$object,
+                        fn($key) => !\str_starts_with($key, '_'),
+                        ARRAY_FILTER_USE_KEY
+                    );
+
+                    return \json_encode($data, JSON_FORCE_OBJECT);
+                }
             ];
         }
 
@@ -163,7 +171,7 @@ class Mapper
         }
 
         foreach ($model->getRules() as $key => $rule) {
-            $escapedKey = str_replace('$', '', $key);
+            $escapedKey = str_replace('$', '_', $key);
 
             if (\is_array($rule['type'])) {
                 $type = self::getUnionType($escapedKey, $rule);
