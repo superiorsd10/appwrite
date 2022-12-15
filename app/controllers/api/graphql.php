@@ -57,13 +57,14 @@ App::get('/v1/graphql')
             ->json($output);
     });
 
-App::post('/v1/graphql')
+App::post('/v1/graphql/mutation')
     ->desc('GraphQL Endpoint')
     ->groups(['graphql'])
     ->label('scope', 'graphql')
+    ->label('docs', false)
     ->label('sdk.auth', [APP_AUTH_TYPE_KEY, APP_AUTH_TYPE_SESSION, APP_AUTH_TYPE_JWT])
     ->label('sdk.namespace', 'graphql')
-    ->label('sdk.method', 'post')
+    ->label('sdk.method', 'mutation')
     ->label('sdk.methodType', 'graphql')
     ->label('sdk.description', '/docs/references/graphql/post.md')
     ->label('sdk.parameters', [
@@ -86,6 +87,52 @@ App::post('/v1/graphql')
         }
 
         $type = $request->getHeader('content-type');
+
+        if (\str_starts_with($type, 'application/graphql')) {
+            $query = parseGraphql($request);
+        }
+
+        if (\str_starts_with($type, 'multipart/form-data')) {
+            $query = parseMultipart($query, $request);
+        }
+
+        $output = execute($schema, $promiseAdapter, $query);
+
+        $response
+            ->setStatusCode(Response::STATUS_CODE_OK)
+            ->json($output);
+    });
+
+App::post('/v1/graphql')
+    ->desc('GraphQL Endpoint')
+    ->groups(['graphql'])
+    ->label('scope', 'graphql')
+    ->label('sdk.auth', [APP_AUTH_TYPE_KEY, APP_AUTH_TYPE_SESSION, APP_AUTH_TYPE_JWT])
+    ->label('sdk.namespace', 'graphql')
+    ->label('sdk.method', 'query')
+    ->label('sdk.methodType', 'graphql')
+    ->label('sdk.description', '/docs/references/graphql/post.md')
+    ->label('sdk.parameters', [
+        'query' => ['default' => [], 'validator' => new JSON(), 'description' => 'The query or queries to execute.', 'optional' => false],
+    ])
+    ->label('sdk.response.code', Response::STATUS_CODE_OK)
+    ->label('sdk.response.type', Response::CONTENT_TYPE_JSON)
+    ->label('sdk.response.model', Response::MODEL_ANY)
+    ->label('abuse-limit', 60)
+    ->label('abuse-time', 60)
+    ->inject('request')
+    ->inject('response')
+    ->inject('schema')
+    ->inject('promiseAdapter')
+    ->action(function (Request $request, Response $response, GQLSchema $schema, Adapter $promiseAdapter) {
+        $query = $request->getParams();
+
+        if ($request->getHeader('x-sdk-graphql') == 'true') {
+            $query = $query['query'];
+        }
+
+        $type = $request->getHeader('content-type');
+
         if (\str_starts_with($type, 'application/graphql')) {
             $query = parseGraphql($request);
         }
@@ -141,6 +188,8 @@ function execute(
         $validations[] = new DisableIntrospection();
         $validations[] = new QueryComplexity($maxComplexity);
         $validations[] = new QueryDepth($maxDepth);
+    }
+    if (App::getMode() === App::MODE_TYPE_PRODUCTION) {
         $flags = DebugFlag::NONE;
     }
 
@@ -195,6 +244,7 @@ function parseMultipart(array $query, Request $request): array
 {
     $operations = \json_decode($query['operations'], true);
     $map = \json_decode($query['map'], true);
+
     foreach ($map as $fileKey => $locations) {
         foreach ($locations as $location) {
             $items = &$operations;
@@ -207,8 +257,12 @@ function parseMultipart(array $query, Request $request): array
             $items = $request->getFiles($fileKey);
         }
     }
+
     $query['query'] = $operations['query'];
     $query['variables'] = $operations['variables'];
+
+    unset($query['operations']);
+    unset($query['map']);
 
     return $query;
 }
