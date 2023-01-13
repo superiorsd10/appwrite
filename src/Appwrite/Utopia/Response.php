@@ -213,6 +213,16 @@ class Response extends SwooleResponse
     public const MODEL_HEALTH_TIME = 'healthTime';
     public const MODEL_HEALTH_ANTIVIRUS = 'healthAntivirus';
 
+    // Messaging
+    public const MODEL_MESSAGING_MESSAGE = 'message';
+    public const MODEL_MESSAGING_MESSAGE_LIST = 'messageList';
+    public const MODEL_MESSAGING_PROVIDER = 'messageProvider';
+    public const MODEL_MESSAGING_PROVIDER_LIST = 'messageProviderList';
+    public const MODEL_MESSAGING_SUBSCRIPTION = 'messageSubscription';
+    public const MODEL_MESSAGING_SUBSCRIPTION_LIST = 'messageSubscriptionList';
+    public const MODEL_MESSAGING_SUBSCRIBER = 'messageSubscriber';
+    public const MODEL_MESSAGING_SUBSCRIBER_LIST = 'messageSubscriberList';
+
     // Deprecated
     public const MODEL_PERMISSIONS = 'permissions';
     public const MODEL_RULE = 'rule';

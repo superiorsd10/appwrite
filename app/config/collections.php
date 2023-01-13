@@ -3206,7 +3206,7 @@ $collections = [
     'files' => [
         '$collection' => ID::custom('buckets'),
         '$id' => ID::custom('files'),
-        '$name' => 'Files',
+        'name' => 'Files',
         'attributes' => [
             [
                 'array' => false,
@@ -3546,6 +3546,102 @@ $collections = [
                 'lengths' => [],
                 'orders' => [],
             ],
+        ],
+    ],
+    'messages' => [
+        '$collection' => ID::custom(Database::METADATA),
+        '$id' => ID::custom('messages'),
+        'name' => 'Messages',
+        'attributes' => [
+            [
+                '$id' => ID::custom('provider'),
+                'type' => Database::VAR_STRING,
+                'format' => '',
+                'size' => 256,
+                'signed' => true,
+                'required' => false,
+                'default' => null,
+                'array' => false,
+                'filters' => [],
+            ]
+        ],
+        'indexes' => [
+
+        ],
+    ],
+    'subscriptions' => [
+        '$collection' => ID::custom(Database::METADATA),
+        '$id' => ID::custom('subscriptions'),
+        'name' => 'Subscriptions',
+        'attributes' => [
+            [
+                '$id' => ID::custom('provider'),
+                'type' => Database::VAR_STRING,
+                'format' => '',
+                'size' => 256,
+                'signed' => true,
+                'required' => false,
+                'default' => null,
+                'array' => false,
+                'filters' => [],
+            ]
+        ],
+        'indexes' => [
+
+        ],
+    ],
+    'subscribers' => [
+        '$collection' => ID::custom(Database::METADATA),
+        '$id' => ID::custom('subscribers'),
+        'name' => 'Subscribers',
+        'attributes' => [
+            [
+                '$id' => ID::custom('subscriptionInternalId'),
+                'type' => Database::VAR_STRING,
+                'format' => '',
+                'size' => Database::LENGTH_KEY,
+                'signed' => true,
+                'required' => false,
+                'default' => null,
+                'array' => false,
+                'filters' => [],
+            ],
+            [
+                '$id' => ID::custom('subscriptionId'),
+                'type' => Database::VAR_STRING,
+                'format' => '',
+                'size' => Database::LENGTH_KEY,
+                'signed' => true,
+                'required' => false,
+                'default' => null,
+                'array' => false,
+                'filters' => [],
+            ],
+            [
+                '$id' => ID::custom('userInternalId'),
+                'type' => Database::VAR_STRING,
+                'format' => '',
+                'size' => Database::LENGTH_KEY,
+                'signed' => true,
+                'required' => false,
+                'default' => null,
+                'array' => false,
+                'filters' => [],
+            ],
+            [
+                '$id' => ID::custom('userId'),
+                'type' => Database::VAR_STRING,
+                'format' => '',
+                'size' => Database::LENGTH_KEY,
+                'signed' => true,
+                'required' => false,
+                'default' => null,
+                'array' => false,
+                'filters' => [],
+            ],
+        ],
+        'indexes' => [
+
         ],
     ],
 ];

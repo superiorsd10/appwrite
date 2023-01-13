@@ -76,4 +76,22 @@ return [ // List of publicly visible scopes
     'health.read' => [
         'description' => 'Access to read your project\'s health status',
     ],
+    'messages.read' => [
+        'description' => 'Access to read your project\'s messages',
+    ],
+    'messages.write' => [
+        'description' => 'Access to create, update, and delete your project\'s messages',
+    ],
+    'subscriptions.read' => [
+        'description' => 'Access to read your project\'s messaging subscriptions',
+    ],
+    'subscriptions.write' => [
+        'description' => 'Access to create, update, and delete your project\'s messaging subscriptions',
+    ],
+    'subscribers.read' => [
+        'description' => 'Access to read your project\'s messaging subscribers',
+    ],
+    'subscribers.write' => [
+        'description' => 'Access to create, update, and delete your project\'s messaging subscribers',
+    ],
 ];
