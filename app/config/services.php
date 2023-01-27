@@ -199,4 +199,17 @@ return [
         'optional' => false,
         'icon' => '',
     ],
+    'router' => [
+        'key' => 'router',
+        'name' => 'Router',
+        'subtitle' => 'Domain Router',
+        'description' => 'Router to support calls that do not follow REST standard',
+        'controller' => 'api/router.php',
+        'sdk' => false,
+        'docs' => false,
+        'docsUrl' => '',
+        'tests' => true,
+        'optional' => false,
+        'icon' => '',
+    ],
 ];

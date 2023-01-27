@@ -72,6 +72,13 @@ services:
       - traefik.http.routers.appwrite_api_https.rule=PathPrefix(`/`)
       - traefik.http.routers.appwrite_api_https.service=appwrite_api
       - traefik.http.routers.appwrite_api_https.tls=true
+      # router
+      - traefik.http.middlewares.appwrite_router_middleware.replacepath.path=/v1/router
+      - traefik.http.routers.appwrite_router_http.entrypoints=appwrite_web
+      - traefik.http.routers.appwrite_router_http.rule=HostRegexp(`{subdomain:[a-zA-Z0-9\\-]+}.${_APP_DOMAIN_FUNCTIONS}`, `{subdomain:[a-zA-Z0-9\\-]+}.{subdomain:[a-zA-Z0-9\\-]+}.${_APP_DOMAIN_FUNCTIONS}`, `${_APP_DOMAIN_FUNCTIONS}`)
+      - traefik.http.routers.appwrite_router_http.service=appwrite_api
+      - traefik.http.routers.appwrite_router_http.priority=1000
+      - traefik.http.routers.appwrite_router_http.middlewares=appwrite_router_middleware@docker
     volumes:
       - appwrite-uploads:/storage/uploads:rw
       - appwrite-cache:/storage/cache:rw
