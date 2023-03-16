@@ -45,7 +45,7 @@ class Etsy extends OAuth2
     private function getPKCE(): string
     {
         if (empty($this->pkce)) {
-            $this->pkce = \bin2hex(\random_bytes(rand(43, 128)));
+            $this->pkce = \bin2hex(\random_bytes(random_int(43, 128)));
         }
 
         return $this->pkce;
